@@ -7,26 +7,31 @@ from .utils.get_latitude_longitude import get_location
 import os
 # Create your views here.
 # geopy documentation : https://geopy.readthedocs.io/en/stable/
+# Rajouter la ville dans le csv ou la region
+
 def index(request):
     '''
     Homepage
     '''
     return render(request, 'index.html')
 
-def interventions(request):
+@api_view(['GET'])
+def interventions_list(request):
     '''
-    list interventions
-    read our database : "Base de données - Interventions Strasbourg - Test recrutement.csv"
-    translate adresses into coordinates
-    populate django template with data from csv file
+    API endpoint to list interventions
     '''
     file_path = 'database/interventions_db.csv'
-    print(os.path.exists(file_path))
-    csv_data = read_csv(file_path)
-    latitude_longitude_data = get_location(csv_data)
-    print(latitude_longitude_data)
-        
+    if os.path.exists(file_path):
+        csv_data = read_csv(file_path)
+        geocoded_data = get_location(csv_data)
+        return Response(geocoded_data)
+    else:
+        return Response({"error": "File not found"}, status=404)
 
+def interventions_view(request):
+    '''
+    View to render the interventions template
+    '''
     return render(request, 'interventions.html')
 
 def update_interventions(request):

@@ -21,5 +21,6 @@ from interventions_web_manager import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('interventions/', views.interventions, name="interventions"),
+    path('api/interventions/', views.interventions_list, name="interventions_list"),
+    path('interventions', views.interventions_view, name="interventions")
  ]

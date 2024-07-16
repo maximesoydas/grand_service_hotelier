@@ -1,4 +1,8 @@
-{% extends 'base.html' %} {% block content %} {% load static %}
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <style>
   @keyframes white-black-animation {
     0%,
@@ -48,92 +52,130 @@
     border-image-slice: 1;
     animation: white-black-animation 2.9s linear infinite;
   }
+
+  #map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .reset-button {
+    background-color: #000; /* Black background for contrast */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+  }
+
+  th.sortable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 </style>
 
-<div
-  class="bg-black min-h-screen flex flex-col justify-center items-center p-4"
->
+<div class="bg-black min-h-screen mt-32 flex flex-col justify-center items-center p-4">
+  <h2 class="text-6xl text-center text-white font-thin mb-4">Carte des Interventions</h2>
   <div class="w-full max-w-6xl mx-auto">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-      <h2 class="text-2xl text-center font-semibold mb-4 text-gray-800">
-        Interventions
-      </h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Adresse
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Type d'intervention
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Précision de l'intervention
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Statut de l'intervention
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Date de l'intervention
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr class="hover:bg-gray-100 cursor-pointer">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                123 Main St
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Plomberie
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Réparation de fuite
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Complété
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                2024-07-15
-              </td>
-            </tr>
-            <tr class="hover:bg-gray-100 cursor-pointer">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                456 Elm St
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Électricité
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                Installation de lumière
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                En cours
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                2024-07-16
-              </td>
-            </tr>
-            <!-- Add more rows as needed -->
-          </tbody>
-        </table>
-      </div>
+    <div class="flex justify-between items-center mb-6">
+      <button class="reset-button white-black-border-animated mb-6" onclick="resetMapView()">Reinitialiser la carte</button>
+    </div>
+    <div class="flex justify-between items-center mb-6">
+      <div id="map" class="bg-white p-6 rounded-lg shadow-lg w-full"></div>
+    </div>
+  </div>
+  <div class="w-full max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl text-center font-semibold mb-4 text-gray-800">Table des Interventions</h2>
+    <div class="overflow-x-auto">
+      <table id="interventions-table" class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(0)">Adresse</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(1)">Type d'intervention</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(2)">Précision de l'intervention</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(3)">Statut de l'intervention</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(4)">Date de l'intervention</th>
+          </tr>
+        </thead>
+        <tbody id="interventions-body" class="bg-white divide-y divide-gray-200">
+          <!-- Rows will be added dynamically -->
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
+
+<script>
+  var initialView = [48.5734053, 7.7521113]; // Strasbourg coordinates
+  var initialZoom = 13;
+  var map;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    map = L.map("map").setView(initialView, initialZoom);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    fetch("/api/interventions/")
+      .then((response) => response.json())
+      .then((interventions) => {
+        var tbody = document.getElementById("interventions-body");
+        tbody.innerHTML = ""; // Clear existing content
+
+        interventions.forEach(function (intervention) {
+          if (intervention.latitude && intervention.longitude) {
+            var marker = L.marker([intervention.latitude, intervention.longitude]).addTo(map);
+            marker.bindPopup(`<b>${intervention.Adresse}</b>`).openPopup();
+
+            var row = `
+              <tr class="hover:bg-gray-100 cursor-pointer">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention.Adresse}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Type d'intervention"]}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Précision de l'intervention"]}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Statut de l'intervention"]}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Date de l'intervention"]}</td>
+              </tr>
+            `;
+            tbody.insertAdjacentHTML("beforeend", row);
+          }
+        });
+      });
+  });
+
+  function resetMapView() {
+    map.setView(initialView, initialZoom);
+  }
+
+  function sortTable(columnIndex) {
+    var table = document.getElementById("interventions-table");
+    var tbody = table.tBodies[0];
+    var rows = Array.from(tbody.rows);
+    var isNumericColumn = !isNaN(Date.parse(rows[0].cells[columnIndex].textContent)) || !isNaN(rows[0].cells[columnIndex].textContent);
+
+    rows.sort(function (a, b) {
+      var cellA = a.cells[columnIndex].textContent.trim();
+      var cellB = b.cells[columnIndex].textContent.trim();
+
+      if (isNumericColumn) {
+        if (!isNaN(Date.parse(cellA))) {
+          // Compare dates
+          return new Date(cellA) - new Date(cellB);
+        }
+        // Compare numeric values
+        return cellA - cellB;
+      } else {
+        return cellA.localeCompare(cellB);
+      }
+    });
+
+    rows.forEach(function (row) {
+      tbody.appendChild(row);
+    });
+  }
+</script>
 {% endblock %}
