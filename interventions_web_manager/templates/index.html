@@ -1,0 +1,103 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<style>
+  @keyframes white-black-animation {
+    0%,
+    100% {
+      border-image-source: linear-gradient(
+        270deg,
+        rgb(255, 255, 255),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255)
+      );
+    }
+    50% {
+      border-image-source: linear-gradient(
+        270deg,
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(0, 0, 0)
+      );
+    }
+  }
+
+  .white-black-border-animated {
+    border: 2px solid transparent;
+    border-image: repeating-linear-gradient(
+        45deg,
+        rgb(255, 255, 255),
+        rgb(0, 0, 0) 10%,
+        rgb(255, 255, 255) 20%,
+        rgb(0, 0, 0) 30%,
+        rgb(255, 255, 255) 40%,
+        rgb(0, 0, 0) 50%,
+        rgb(255, 255, 255) 60%,
+        rgb(0, 0, 0) 70%,
+        rgb(255, 255, 255) 80%,
+        rgb(0, 0, 0) 90%,
+        rgb(255, 255, 255) 100%
+      )
+      1;
+    border-image-slice: 1;
+    animation: white-black-animation 2.9s linear infinite;
+  }
+</style>
+
+<div class="sm:block">
+  <div
+    class="bg-black min-h-screen bg-fixed bg-cover bg-no-repeat bg-center flex justify-center items-center"
+  >
+    <h1
+      class="section text-4xl sm:text-6xl font-thin rounded-lg bg-opacity-65 text-white p-4 text-border"
+    >
+      Grand Service <br />
+      <i>Hotelier </i>
+    </h1>
+  </div>
+
+  <div
+    class="bg-black min-h-screen bg-fixed bg-cover bg-no-repeat bg-center flex flex-col justifiy-center items-center p-4"
+  >
+    <div
+      class="section flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4"
+    >
+      <div class="flex flex-col justify-center items-center text-center">
+        {% comment %}
+        <h1
+          class="text-4xl sm:text-5xl w-full sm:w-auto font-thin font-kanit mt-44 bg-black rounded-lg bg-opacity-35 text-center gs_reveal_fromRight text-emerald-50 p-4"
+        >
+          Gérer les interventions
+        </h1>
+        {% endcomment %}
+        <a href="" class="inline-block mt-12 w-full sm:w-auto" target="__blank">
+          <p
+            class="font-thin hover:text-emerald-300 text-center bg-black text-white bg-opacity-15 opacity-90 p-4"
+          >
+            <span class="font-semibold text-center">Outil de Gérance</span
+            ><br />
+            Visualiser et gerer vos interventions
+          </p>
+          <img
+            src="{% static 'images/interventions.png' %}"
+            alt="Descriptive Text for GIF"
+            class="rounded hover:rounded-x w-full sm:w-auto"
+          />
+        </a>
+        <a
+        href="{% url 'interventions' %}"
+          class="white-black-border-animated bg-black mt-10 bg-opacity-40 font-extralight p-2"
+        >
+          <h1 class="bold font-thin text-md text-white">Voir Interventions</h1>
+      </a>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>
