@@ -1,5 +1,5 @@
 Adresse,Type d'intervention,Précision de l'intervention,Statut de l'intervention,Date de l'intervention
-1 Rue de la Nuée-Bleue,Technique,Installation de matériel informatique,À planifier,2023-12-21 16:00:00
+1 Rue de la Nuée-Bleue,Technique,Installation de matériel informatique,Complété,2023-12-21 16:00:00
 1 Rue de la Nuée-Bleue,Ménage,Nettoyage des locaux,En cours,2023-09-19 08:00:00
 2 Rue du Dôme,Médiation,Gestion de conflit,Réalisé,2023-05-11 16:00:00
 2 Rue du Dôme,Technique,Maintenance réseau,À planifier,2023-03-07 08:00:00
@@ -11,7 +11,7 @@ Adresse,Type d'intervention,Précision de l'intervention,Statut de l'interventio
 5 Place Kléber,Technique,Mise à jour logiciels,À planifier,2023-04-04 08:00:00
 6 Place de la Cathédrale,Ménage,Nettoyage des sols,En cours,2023-08-03 16:00:00
 6 Place de la Cathédrale,Médiation,Atelier de médiation,Réalisé,2023-11-23 16:00:00
-7 Rue des Juifs,Technique,Support utilisateur,À planifier,2023-12-31 00:00:00
+7 Rue des Juifs,Technique,Support utilisateur,Complété,2023-12-31 00:00:00
 7 Rue des Juifs,Ménage,Nettoyage des équipements,En cours,2023-08-03 16:00:00
 8 Rue des Hallebardes,Médiation,Gestion de plainte,Réalisé,2023-01-19 16:00:00
 8 Rue des Hallebardes,Technique,Vérification des connexions,À planifier,2023-07-16 00:00:00
@@ -27,7 +27,7 @@ Adresse,Type d'intervention,Précision de l'intervention,Statut de l'interventio
 13 Rue du Marché,Ménage,Nettoyage des meubles,En cours,2023-08-13 00:00:00
 14 Rue de la Mésange,Médiation,Atelier participatif,Réalisé,2023-08-31 16:00:00
 14 Rue de la Mésange,Technique,Optimisation réseau,À planifier,2023-09-10 00:00:00
-15 Rue des Bouchers,Ménage,Nettoyage des claviers,En cours,2023-05-21 00:00:00
+15 Rue des Bouchers,Ménage,Nettoyage des claviers,Complété,2023-05-21 00:00:00
 15 Rue des Bouchers,Médiation,Gestion de conflit,Réalisé,2023-05-11 16:00:00
 16 Rue des Tonneliers,Technique,Réparation urgente,À planifier,2023-01-19 16:00:00
 16 Rue des Tonneliers,Ménage,Nettoyage des luminaires,En cours,2023-12-03 00:00:00

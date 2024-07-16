@@ -15,8 +15,6 @@ def get_location(csv_data):
     
     location_data = []
     seen_addresses = {}
-    address_found = 0
-    duplicate_address = 0
     for row in csv_data:
         # Append postal code, city, region, and country to the address
         address = f"{row['Adresse']}, 67000 strasbourg, centre, Grand Est, France"
@@ -24,13 +22,8 @@ def get_location(csv_data):
         # Check if we already have coordinates for this address
         if address in seen_addresses:
             location = seen_addresses[address]
-            duplicate_address = duplicate_address + 1
-            print(f'{duplicate_address} duplicates')
         else:
             location = geocode(address, addressdetails=True)
-            address_found = address_found + 1
-            print(address_found)
-            print(location)
             seen_addresses[address] = location
 
         if location:

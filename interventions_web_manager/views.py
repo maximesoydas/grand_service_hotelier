@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import render
+import csv
+import os
 from .utils.read_csv import read_csv
 from .utils.get_latitude_longitude import get_location
-import os
-# Create your views here.
-# geopy documentation : https://geopy.readthedocs.io/en/stable/
-# Rajouter la ville dans le csv ou la region
+from django.shortcuts import redirect
 
 def index(request):
     '''
@@ -28,31 +26,79 @@ def interventions_list(request):
     else:
         return Response({"error": "File not found"}, status=404)
 
+@api_view(['POST'])
+def update_intervention_status(request):
+    '''
+    API endpoint to update the status of an intervention
+    '''
+    address = request.data.get('Adresse')
+    intervention_type = request.data.get('Type d\'intervention')
+    intervention_precision = request.data.get('Précision de l\'intervention')
+    date = request.data.get('Date de l\'intervention')
+    new_status = request.data.get('Statut de l\'intervention')
+    
+    file_path = 'database/interventions_db.csv'
+    updated_data = []
+    print('writing1')
+
+    if os.path.exists(file_path):
+        with open(file_path, mode='r', newline='') as file:
+            print('writing2')
+            reader = csv.DictReader(file)
+            for row in reader:
+                if (row['Adresse'] == address and 
+                    row['Type d\'intervention'] == intervention_type and 
+                    row['Précision de l\'intervention'] == intervention_precision and
+                    row['Date de l\'intervention'] == date):
+                    row['Statut de l\'intervention'] = new_status
+                updated_data.append(row)
+        
+        with open(file_path, mode='w', newline='') as file:
+            print('writing')
+            writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            writer.writerows(updated_data)
+            print('writing')
+
+        
+        return redirect('/interventions')
+    else:
+        return Response({"error": "File not found"}, status=404)
+
 def interventions_view(request):
     '''
     View to render the interventions template
     '''
     return render(request, 'interventions.html')
 
-def update_interventions(request):
-    '''
-    update interventions
-    get request of new data from interventions.html
-    update csv file (database)
-    '''
-    return render(request, 'interventions.html')
 
 
-def backup_interventions_db(request):
+def add_intervention_view(request):
     '''
-    before updating create a copy of the db in its current state
-    filename has date and time as well as version number of database
+    View to render the add intervention form
     '''
+    if request.method == 'POST':
+        address = request.POST.get('Adresse')
+        intervention_type = request.POST.get('Type d\'intervention')
+        intervention_precision = request.POST.get('Précision de l\'intervention')
+        status = request.POST.get('Statut de l\'intervention')
+        date = request.POST.get('Date de l\'intervention')
+        
+        file_path = 'database/interventions_db.csv'
+        new_intervention = {
+            'Adresse': address,
+            'Type d\'intervention': intervention_type,
+            'Précision de l\'intervention': intervention_precision,
+            'Statut de l\'intervention': status,
+            'Date de l\'intervention': date
+        }
+        
+        if os.path.exists(file_path):
+            with open(file_path, mode='a', newline='') as file:
+                writer = csv.DictWriter(file, fieldnames=new_intervention.keys())
+                writer.writerow(new_intervention)
+            return redirect('interventions_view')
+        else:
+            return Response({"error": "File not found"}, status=404)
     
-    
-def list_backup_interventions_db(request):
-    '''
-    list all backups
-    allow download
-    '''
-    return render(request, 'backup_interventions_list.html')
+    return render(request, 'add_intervention.html')

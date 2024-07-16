@@ -1,7 +1,8 @@
-{% extends 'base.html' %}
-{% block content %}
-{% load static %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% extends 'base.html' %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+/>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <style>
   @keyframes white-black-animation {
@@ -72,39 +73,187 @@
     border-radius: 12px;
   }
 
-  th.sortable:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  .loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    z-index: 1000;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Ensure the modal is above the map */
+  #intervention-modal {
+    z-index: 2000;
   }
 </style>
 
-<div class="bg-black min-h-screen mt-32 flex flex-col justify-center items-center p-4">
-  <h2 class="text-6xl text-center text-white font-thin mb-4">Carte des Interventions</h2>
+<div
+  class="bg-black min-h-screen mt-32 flex flex-col justify-center items-center p-4"
+>
+  <h2 class="text-6xl text-center text-white font-thin mb-4">
+    Carte des Interventions
+  </h2>
   <div class="w-full max-w-6xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <button class="reset-button white-black-border-animated mb-6" onclick="resetMapView()">Reinitialiser la carte</button>
+      <button
+        class="reset-button white-black-border-animated mb-6"
+        onclick="resetMapView()"
+      >
+        Reinitialiser la carte
+      </button>
     </div>
     <div class="flex justify-between items-center mb-6">
       <div id="map" class="bg-white p-6 rounded-lg shadow-lg w-full"></div>
     </div>
   </div>
   <div class="w-full max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="text-2xl text-center font-semibold mb-4 text-gray-800">Table des Interventions</h2>
+    <h2 class="text-2xl text-center font-semibold mb-4 text-gray-800">
+      Table des Interventions
+    </h2>
     <div class="overflow-x-auto">
-      <table id="interventions-table" class="min-w-full divide-y divide-gray-200">
+      <table
+        id="interventions-table"
+        class="min-w-full divide-y divide-gray-200"
+      >
         <thead class="bg-gray-50">
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(0)">Adresse</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(1)">Type d'intervention</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(2)">Précision de l'intervention</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(3)">Statut de l'intervention</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable" onclick="sortTable(4)">Date de l'intervention</th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable"
+              onclick="sortTable(0)"
+            >
+              Adresse
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable"
+              onclick="sortTable(1)"
+            >
+              Type d'intervention
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable"
+              onclick="sortTable(2)"
+            >
+              Précision de l'intervention
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable"
+              onclick="sortTable(3)"
+            >
+              Statut de l'intervention
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable"
+              onclick="sortTable(4)"
+            >
+              Date de l'intervention
+            </th>
           </tr>
         </thead>
-        <tbody id="interventions-body" class="bg-white divide-y divide-gray-200">
+        <tbody
+          id="interventions-body"
+          class="bg-white divide-y divide-gray-200"
+        >
           <!-- Rows will be added dynamically -->
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+<div id="loading-indicator" class="loading-indicator">
+  Récupération des interventions en cours...
+</div>
+
+<!-- Modal for updating intervention status -->
+<div id="intervention-modal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+  <div
+    class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    <span
+      class="hidden sm:inline-block sm:align-middle sm:h-screen"
+      aria-hidden="true"
+      >&#8203;</span
+    >
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
+          >
+            <!-- Icon -->
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900"
+              id="modal-title"
+            >
+              Mettre à jour le statut de l'intervention
+            </h3>
+            <div class="mt-2" id="modal-selection">
+              <div id="modal-content"></div>
+            </div>
+            <div class="mt-2 hidden" id="modal-update">
+              <p class="text-sm text-gray-500">
+                <span id="modal-address-update"></span>
+              </p>
+              <p class="text-sm text-gray-500"><span id="modal-type"></span></p>
+              <p class="text-sm text-gray-500">
+                <span id="modal-precision"></span>
+              </p>
+              <label
+                for="modal-status"
+                class="block text-sm font-medium text-gray-700"
+                >Nouveau statut</label
+              >
+              <select
+                id="modal-status"
+                name="status"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              >
+                <option value="En cours">En cours</option>
+                <option value="Complété">Complété</option>
+                <option value="Annulé">Annulé</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button
+          type="button"
+          class="white-black-border-animated inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+          onclick="updateStatus()"
+        >
+          Mettre à jour
+        </button>
+        <button
+          type="button"
+          class="mt-3 white-black-border-animated inline-flex w-full justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+          onclick="closeModal()"
+        >
+          Annuler
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -113,14 +262,21 @@
   var initialView = [48.5734053, 7.7521113]; // Strasbourg coordinates
   var initialZoom = 13;
   var map;
+  var addressMap = {};
+  var currentIntervention;
 
   document.addEventListener("DOMContentLoaded", function () {
     map = L.map("map").setView(initialView, initialZoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
+    fetchInterventions();
+  });
+
+  function fetchInterventions() {
     fetch("/api/interventions/")
       .then((response) => response.json())
       .then((interventions) => {
@@ -129,24 +285,126 @@
 
         interventions.forEach(function (intervention) {
           if (intervention.latitude && intervention.longitude) {
-            var marker = L.marker([intervention.latitude, intervention.longitude]).addTo(map);
-            marker.bindPopup(`<b>${intervention.Adresse}</b>`).openPopup();
+            var address = intervention.Adresse;
+            if (!addressMap[address]) {
+              addressMap[address] = [];
+            }
+            addressMap[address].push(intervention);
 
             var row = `
-              <tr class="hover:bg-gray-100 cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention.Adresse}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Type d'intervention"]}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Précision de l'intervention"]}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Statut de l'intervention"]}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Date de l'intervention"]}</td>
-              </tr>
-            `;
+                <tr class="hover:bg-gray-100 cursor-pointer" onclick="showModal('${address}')">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention.Adresse}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Type d'intervention"]}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Précision de l'intervention"]}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Statut de l'intervention"]}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Date de l'intervention"]}</td>
+                </tr>
+              `;
             tbody.insertAdjacentHTML("beforeend", row);
           }
         });
-      });
-  });
 
+        for (var address in addressMap) {
+          (function (addr) {
+            var lat = addressMap[addr][0].latitude;
+            var lng = addressMap[addr][0].longitude;
+
+            var marker = L.marker([lat, lng]).addTo(map);
+            marker.bindPopup(`<b>${addr}</b>`);
+            marker.on("click", function () {
+              showModal(addr);
+            });
+          })(address);
+        }
+
+        // Hide the loading indicator after data is loaded
+        document.getElementById("loading-indicator").style.display = "none";
+      })
+      .catch((error) => {
+        console.error("Error fetching interventions:", error);
+        // Hide the loading indicator in case of error
+        document.getElementById("loading-indicator").style.display = "none";
+      });
+  }
+
+  function showModal(address) {
+    var interventionsForAddress = addressMap[address];
+    var modalContent = "";
+
+    interventionsForAddress.forEach(function (intervention, index) {
+      modalContent += `
+          <div class="intervention-item mb-4">
+            <p><strong>Intervention ${index + 1}</strong></p>
+            <p>${intervention["Adresse"]}</p>
+            <p>Type d'intervention: ${intervention["Type d'intervention"]}</p>
+            <p>Précision de l'intervention: ${
+              intervention["Précision de l'intervention"]
+            }</p>
+            <p>Statut de l'intervention: ${
+              intervention["Statut de l'intervention"]
+            }</p>
+            <p>Date de l'intervention: ${
+              intervention["Date de l'intervention"]
+            }</p>
+            <button class="mt-2 white-black-border-animated inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="selectIntervention(${index}, '${address}')">Sélectionner cette intervention</button>
+          </div>
+          <hr/>
+        `;
+    });
+
+    document.getElementById("modal-content").innerHTML = modalContent;
+    document.getElementById("modal-selection").classList.remove("hidden");
+    document.getElementById("modal-update").classList.add("hidden");
+    document.getElementById("intervention-modal").classList.remove("hidden");
+  }
+
+  function selectIntervention(index, address) {
+    var intervention = addressMap[address][index];
+    currentIntervention = intervention;
+
+    document.getElementById("modal-address-update").textContent =
+      intervention.Adresse;
+    document.getElementById("modal-type").textContent =
+      intervention["Type d'intervention"];
+    document.getElementById("modal-precision").textContent =
+      intervention["Précision de l'intervention"];
+    document.getElementById("modal-status").value =
+      intervention["Statut de l'intervention"];
+
+    document.getElementById("modal-selection").classList.add("hidden");
+    document.getElementById("modal-update").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("intervention-modal").classList.add("hidden");
+  }
+  function updateStatus() {
+    var newStatus = document.getElementById("modal-status").value;
+    fetch("/api/update_intervention_status/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Adresse: currentIntervention.Adresse,
+        "Type d'intervention": currentIntervention["Type d'intervention"],
+        "Précision de l'intervention":
+          currentIntervention["Précision de l'intervention"],
+        "Date de l'intervention": currentIntervention["Date de l'intervention"],
+        "Statut de l'intervention": newStatus,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "/interventions";
+        } else {
+          console.error("Failed to update status:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
   function resetMapView() {
     map.setView(initialView, initialZoom);
   }
@@ -155,7 +413,9 @@
     var table = document.getElementById("interventions-table");
     var tbody = table.tBodies[0];
     var rows = Array.from(tbody.rows);
-    var isNumericColumn = !isNaN(Date.parse(rows[0].cells[columnIndex].textContent)) || !isNaN(rows[0].cells[columnIndex].textContent);
+    var isNumericColumn =
+      !isNaN(Date.parse(rows[0].cells[columnIndex].textContent)) ||
+      !isNaN(rows[0].cells[columnIndex].textContent);
 
     rows.sort(function (a, b) {
       var cellA = a.cells[columnIndex].textContent.trim();

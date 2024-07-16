@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('api/interventions/', views.interventions_list, name="interventions_list"),
-    path('interventions', views.interventions_view, name="interventions")
+    path('api/update_intervention_status/', views.update_intervention_status, name="update_intervention_status"),
+    path('interventions', views.interventions_view, name="interventions"),
+
  ]
