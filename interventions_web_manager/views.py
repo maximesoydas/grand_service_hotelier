@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
-from interventions_web_manager.utils import read_csv
-from geopy.geocoders import Nominatim
+from .utils.read_csv import read_csv
+from .utils.get_latitude_longitude import get_location
+import os
 # Create your views here.
 # geopy documentation : https://geopy.readthedocs.io/en/stable/
 def index(request):
@@ -19,8 +20,13 @@ def interventions(request):
     translate adresses into coordinates
     populate django template with data from csv file
     '''
-    interventions = []
-    geolocator = Nominatim
+    file_path = 'database/interventions_db.csv'
+    print(os.path.exists(file_path))
+    csv_data = read_csv(file_path)
+    latitude_longitude_data = get_location(csv_data)
+    print(latitude_longitude_data)
+        
+
     return render(request, 'interventions.html')
 
 def update_interventions(request):

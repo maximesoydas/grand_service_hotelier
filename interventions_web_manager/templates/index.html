@@ -51,6 +51,7 @@
 </style>
 
 <div class="sm:block">
+  {% comment %}
   <div
     class="bg-black min-h-screen bg-fixed bg-cover bg-no-repeat bg-center flex justify-center items-center"
   >
@@ -61,9 +62,10 @@
       <i>Hotelier </i>
     </h1>
   </div>
+  {% endcomment %}
 
   <div
-    class="bg-black min-h-screen bg-fixed bg-cover bg-no-repeat bg-center flex flex-col justifiy-center items-center p-4"
+    class="bg-black min-h-screen bg-fixed bg-cover bg-no-repeat bg-center flex flex-col justifiy-center items-center p-4 mt-32"
   >
     <div
       class="section flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4"
@@ -91,11 +93,11 @@
           />
         </a>
         <a
-        href="{% url 'interventions' %}"
+          href="{% url 'interventions' %}"
           class="white-black-border-animated bg-black mt-10 bg-opacity-40 font-extralight p-2"
         >
           <h1 class="bold font-thin text-md text-white">Voir Interventions</h1>
-      </a>
+        </a>
       </div>
     </div>
   </div>
