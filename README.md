@@ -4,7 +4,45 @@
 
 This is a Django project for managing interventions. The project includes functionalities to view, add, update, and delete interventions on a map interface.
 
-## Installation
+## Docker Installation
+
+### Prerequisites
+
+- Docker (linux[https://docs.docker.com/engine/install/ubuntu/],Windows[https://docs.docker.com/desktop/install/windows-install/])
+### Steps
+
+1. **Clone the repository**
+
+    ```bash
+    git clone <repository_url>
+    cd GRAND_SERVICE_HOTELIER
+    ```
+2. **Build and Run the Docker Containers**
+
+    ```bash
+    docker build -t interventions_manager .
+    ```
+    ```bash
+    docker run -p 8000:8000 interventions_manager
+    ```
+
+3. **Access the Application**
+
+    Open your web browser and navigate to `http://127.0.0.1:8000/` to view the application.
+
+4. **Stop Application**
+
+    ```bash
+    docker ps
+    ```
+    ```bash
+    docker stop <CONTAINER_ID>
+
+    or
+
+    docker stop <NAMES>
+    ```
+## Local Installation (Repository)
 
 ### Prerequisites
 
