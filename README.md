@@ -8,7 +8,7 @@ This is a Django project for managing interventions. The project includes functi
 
 ### Prerequisites
 
-- Docker (linux[https://docs.docker.com/engine/install/ubuntu/],Windows[https://docs.docker.com/desktop/install/windows-install/])
+- Docker ([Linux](https://docs.docker.com/engine/install/ubuntu/), [Windows](https://docs.docker.com/desktop/install/windows-install/))
 ### Steps
 
 1. **Clone the repository**
@@ -174,6 +174,9 @@ Here are some suggested improvements that could be made to enhance the project:
 7. **Geolocation Enhancement**
    - Optimize the geolocation process by calling the geopy library only when new entries are added. This will ensure quicker response times when loading the intervention page since the geolocation data will already be available in the CSV file.
 
+8. **Deploy on a VPS**
+
+    - If necessary we can easily deploy on a vps over https with nginx
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
