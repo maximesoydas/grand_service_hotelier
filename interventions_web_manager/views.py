@@ -73,32 +73,54 @@ def interventions_view(request):
 
 
 
-def add_intervention_view(request):
-    '''
-    View to render the add intervention form
-    '''
-    if request.method == 'POST':
-        address = request.POST.get('Adresse')
-        intervention_type = request.POST.get('Type d\'intervention')
-        intervention_precision = request.POST.get('Précision de l\'intervention')
-        status = request.POST.get('Statut de l\'intervention')
-        date = request.POST.get('Date de l\'intervention')
-        
-        file_path = 'database/interventions_db.csv'
-        new_intervention = {
-            'Adresse': address,
-            'Type d\'intervention': intervention_type,
-            'Précision de l\'intervention': intervention_precision,
-            'Statut de l\'intervention': status,
-            'Date de l\'intervention': date
-        }
-        
-        if os.path.exists(file_path):
-            with open(file_path, mode='a', newline='') as file:
-                writer = csv.DictWriter(file, fieldnames=new_intervention.keys())
-                writer.writerow(new_intervention)
-            return redirect('interventions_view')
-        else:
-            return Response({"error": "File not found"}, status=404)
+
+@api_view(['POST'])
+def add_intervention(request):
+    new_intervention = {
+        'Adresse': request.data.get('Adresse'),
+        'Type d\'intervention': request.data.get('Type d\'intervention'),
+        'Précision de l\'intervention': request.data.get('Précision de l\'intervention'),
+        'Statut de l\'intervention': request.data.get('Statut de l\'intervention'),
+        'Date de l\'intervention': request.data.get('Date de l\'intervention')
+    }
     
-    return render(request, 'add_intervention.html')
+    file_path = 'database/interventions_db.csv'
+    
+    if os.path.exists(file_path):
+        with open(file_path, mode='a', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=new_intervention.keys())
+            writer.writerow(new_intervention)
+        
+        return render(request, 'interventions.html')
+    else:
+        return Response({"error": "File not found"}, status=404)
+
+
+@api_view(['POST'])
+def delete_intervention(request):
+    address = request.data.get('Adresse')
+    intervention_type = request.data.get('Type d\'intervention')
+    intervention_precision = request.data.get('Précision de l\'intervention')
+    date = request.data.get('Date de l\'intervention')
+    
+    file_path = 'database/interventions_db.csv'
+    updated_data = []
+
+    if os.path.exists(file_path):
+        with open(file_path, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if not (row['Adresse'] == address and 
+                        row['Type d\'intervention'] == intervention_type and 
+                        row['Précision de l\'intervention'] == intervention_precision and
+                        row['Date de l\'intervention'] == date):
+                    updated_data.append(row)
+        
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            writer.writerows(updated_data)
+            print("delete finished")
+        return render(request, 'interventions.html')
+    else:
+        return Response({"error": "File not found"}, status=404)

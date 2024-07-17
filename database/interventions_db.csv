@@ -3,7 +3,7 @@ Adresse,Type d'intervention,Précision de l'intervention,Statut de l'interventio
 1 Rue de la Nuée-Bleue,Ménage,Nettoyage des locaux,En cours,2023-09-19 08:00:00
 2 Rue du Dôme,Médiation,Gestion de conflit,Réalisé,2023-05-11 16:00:00
 2 Rue du Dôme,Technique,Maintenance réseau,À planifier,2023-03-07 08:00:00
-3 Rue de la Nuée-Bleue,Ménage,Nettoyage vitres,En cours,2023-07-06 16:00:00
+3 Rue de la Nuée-Bleue,Ménage,Nettoyage vitres,Complété,2023-07-06 16:00:00
 3 Rue de la Nuée-Bleue,Médiation,Session de formation,Réalisé,2023-12-21 16:00:00
 4 Rue du Vieux-Marché-aux-Poissons,Technique,Réparation de matériel,À planifier,2023-06-18 00:00:00
 4 Rue du Vieux-Marché-aux-Poissons,Ménage,Nettoyage des bureaux,En cours,2023-07-25 08:00:00
@@ -39,3 +39,4 @@ Adresse,Type d'intervention,Précision de l'intervention,Statut de l'interventio
 19 Rue des Serruriers,Ménage,Nettoyage des rideaux,En cours,2023-01-29 00:00:00
 20 Rue des Grandes Arcades,Médiation,Discussion médiatrice,Réalisé,2023-08-13 00:00:00
 20 Rue des Grandes Arcades,Technique,Sécurisation des accès,À planifier,2023-05-02 08:00:00
+1 Rue de la Nuée-Bleue,Technique,Installation de materiel informatique,Complété,2024-07-17

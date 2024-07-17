@@ -23,6 +23,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('api/interventions/', views.interventions_list, name="interventions_list"),
     path('api/update_intervention_status/', views.update_intervention_status, name="update_intervention_status"),
+    path('api/add_intervention/', views.add_intervention, name='add_intervention'),
+    path('api/delete_intervention/', views.delete_intervention, name="delete_intervention"),
     path('interventions', views.interventions_view, name="interventions"),
 
  ]

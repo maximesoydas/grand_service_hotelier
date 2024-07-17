@@ -96,6 +96,10 @@
   #intervention-modal {
     z-index: 2000;
   }
+  /* Ensure the modal is above the map */
+  #add-intervention-modal {
+    z-index: 2000;
+  }
 </style>
 
 <div
@@ -111,6 +115,12 @@
         onclick="resetMapView()"
       >
         Reinitialiser la carte
+      </button>
+      <button
+        class="reset-button white-black-border-animated mb-6"
+        onclick="openAddInterventionModal()"
+      >
+        Ajouter une intervention
       </button>
     </div>
     <div class="flex justify-between items-center mb-6">
@@ -258,6 +268,134 @@
   </div>
 </div>
 
+<!-- Modal for adding intervention -->
+<div
+  id="add-intervention-modal"
+  class="hidden fixed z-10 inset-0 overflow-y-auto"
+>
+  <div
+    class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    <span
+      class="hidden sm:inline-block sm:align-middle sm:h-screen"
+      aria-hidden="true"
+      >&#8203;</span
+    >
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
+          >
+            <!-- Icon -->
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900"
+              id="modal-title"
+            >
+              Ajouter une intervention
+            </h3>
+            <div class="mt-2">
+              <form id="add-intervention-form">
+                <div class="mb-4">
+                  <label
+                    for="Adresse"
+                    class="block text-sm font-medium text-gray-700"
+                    >Adresse</label
+                  >
+                  <input
+                    type="text"
+                    id="Adresse"
+                    name="Adresse"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label
+                    for="Type d'intervention"
+                    class="block text-sm font-medium text-gray-700"
+                    >Type d'intervention</label
+                  >
+                  <input
+                    type="text"
+                    id="Type d'intervention"
+                    name="Type d'intervention"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label
+                    for="Précision de l'intervention"
+                    class="block text-sm font-medium text-gray-700"
+                    >Précision de l'intervention</label
+                  >
+                  <input
+                    type="text"
+                    id="Précision de l'intervention"
+                    name="Précision de l'intervention"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label
+                    for="Statut de l'intervention"
+                    class="block text-sm font-medium text-gray-700"
+                    >Statut de l'intervention</label
+                  >
+                  <select
+                    id="Statut de l'intervention"
+                    name="Statut de l'intervention"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  >
+                    <option value="En cours">En cours</option>
+                    <option value="Complété">Complété</option>
+                    <option value="Annulé">Annulé</option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label
+                    for="Date de l'intervention"
+                    class="block text-sm font-medium text-gray-700"
+                    >Date de l'intervention</label
+                  >
+                  <input
+                    type="date"
+                    id="Date de l'intervention"
+                    name="Date de l'intervention"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button
+          type="button"
+          class="white-black-border-animated inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
+          onclick="addIntervention()"
+        >
+          Ajouter
+        </button>
+        <button
+          type="button"
+          class="mt-3 white-black-border-animated inline-flex w-full justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+          onclick="closeAddInterventionModal()"
+        >
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   var initialView = [48.5734053, 7.7521113]; // Strasbourg coordinates
   var initialZoom = 13;
@@ -347,6 +485,7 @@
               intervention["Date de l'intervention"]
             }</p>
             <button class="mt-2 white-black-border-animated inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="selectIntervention(${index}, '${address}')">Sélectionner cette intervention</button>
+            <button class="mt-2 white-black-border-animated inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="deleteIntervention(${index}, '${address}')">Supprimer cette intervention</button>
           </div>
           <hr/>
         `;
@@ -378,6 +517,7 @@
   function closeModal() {
     document.getElementById("intervention-modal").classList.add("hidden");
   }
+
   function updateStatus() {
     var newStatus = document.getElementById("modal-status").value;
     fetch("/api/update_intervention_status/", {
@@ -405,6 +545,71 @@
         console.error("Error:", error);
       });
   }
+
+  function deleteIntervention(index, address) {
+    var intervention = addressMap[address][index];
+    fetch("/api/delete_intervention/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Adresse: intervention.Adresse,
+        "Type d'intervention": intervention["Type d'intervention"],
+        "Précision de l'intervention":
+          intervention["Précision de l'intervention"],
+        "Date de l'intervention": intervention["Date de l'intervention"],
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "/interventions";
+        } else {
+          console.error("Failed to delete intervention:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  function openAddInterventionModal() {
+    document
+      .getElementById("add-intervention-modal")
+      .classList.remove("hidden");
+  }
+
+  function closeAddInterventionModal() {
+    document.getElementById("add-intervention-modal").classList.add("hidden");
+  }
+
+  function addIntervention() {
+    var form = document.getElementById("add-intervention-form");
+    var formData = new FormData(form);
+    var data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    fetch("/api/add_intervention/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "/interventions";
+        } else {
+          console.error("Failed to add intervention:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   function resetMapView() {
     map.setView(initialView, initialZoom);
   }
