@@ -3,7 +3,7 @@ attrs==23.2.0
 cattrs==23.2.3
 certifi==2024.7.4
 charset-normalizer==3.3.2
-Django==5.0.7
+Django==4.2.5
 djangorestframework==3.15.2
 drf-yasg==1.21.7
 exceptiongroup==1.2.2
