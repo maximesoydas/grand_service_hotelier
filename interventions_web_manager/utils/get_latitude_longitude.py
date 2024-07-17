@@ -6,8 +6,8 @@ requests_cache.install_cache('geopy_cache', expire_after=3600)
 
 def get_location(csv_data):
     '''
-    receives a dict of addresses in the argument
-    returns a dict of location (latitude and longitude)
+    receives a list of dictionaries containing addresses in the argument
+    returns a list of dictionaries with location (latitude and longitude)
     '''
     geolocator = Nominatim(user_agent="interventions_web_manager")
     geolocator.timeout = 2  # set a timeout for the geocoding service
@@ -16,8 +16,14 @@ def get_location(csv_data):
     location_data = []
     seen_addresses = {}
     for row in csv_data:
+        print(row)
+        # Check if latitude and longitude already exist
+        if 'latitude' in row and row['latitude'] and 'longitude' in row and row['longitude']:
+            location_data.append(row)
+            continue
+
         # Append postal code, city, region, and country to the address
-        address = f"{row['Adresse']}, 67000 strasbourg, centre, Grand Est, France"
+        address = f"{row['Adresse']}, 67000 Strasbourg, Centre, Grand Est, France"
         
         # Check if we already have coordinates for this address
         if address in seen_addresses:
@@ -29,8 +35,11 @@ def get_location(csv_data):
         if location:
             row['latitude'] = location.latitude
             row['longitude'] = location.longitude
-            location_data.append(row)
         else:
             print(f"Could not geocode address: {address}")
+            row['latitude'] = None
+            row['longitude'] = None
+        
+        location_data.append(row)
     
     return location_data

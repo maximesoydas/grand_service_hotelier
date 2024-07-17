@@ -4,103 +4,17 @@
   href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
 />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<style>
-  @keyframes white-black-animation {
-    0%,
-    100% {
-      border-image-source: linear-gradient(
-        270deg,
-        rgb(255, 255, 255),
-        rgb(0, 0, 0),
-        rgb(255, 255, 255),
-        rgb(0, 0, 0),
-        rgb(255, 255, 255),
-        rgb(0, 0, 0),
-        rgb(255, 255, 255)
-      );
-    }
-    50% {
-      border-image-source: linear-gradient(
-        270deg,
-        rgb(0, 0, 0),
-        rgb(255, 255, 255),
-        rgb(0, 0, 0),
-        rgb(255, 255, 255),
-        rgb(0, 0, 0),
-        rgb(255, 255, 255),
-        rgb(0, 0, 0)
-      );
-    }
-  }
 
-  .white-black-border-animated {
-    border: 2px solid transparent;
-    border-image: repeating-linear-gradient(
-        45deg,
-        rgb(255, 255, 255),
-        rgb(0, 0, 0) 10%,
-        rgb(255, 255, 255) 20%,
-        rgb(0, 0, 0) 30%,
-        rgb(255, 255, 255) 40%,
-        rgb(0, 0, 0) 50%,
-        rgb(255, 255, 255) 60%,
-        rgb(0, 0, 0) 70%,
-        rgb(255, 255, 255) 80%,
-        rgb(0, 0, 0) 90%,
-        rgb(255, 255, 255) 100%
-      )
-      1;
-    border-image-slice: 1;
-    animation: white-black-animation 2.9s linear infinite;
-  }
-
-  #map {
-    height: 400px;
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .reset-button {
-    background-color: #000; /* Black background for contrast */
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 12px;
-  }
-
-  .loading-indicator {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.75);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    z-index: 1000;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  /* Ensure the modal is above the map */
-  #intervention-modal {
-    z-index: 2000;
-  }
-  /* Ensure the modal is above the map */
-  #add-intervention-modal {
-    z-index: 2000;
-  }
-</style>
+<link rel="stylesheet" href="{% static 'styles/interventions.css' %}" />
+<script
+  type="text/javascript"
+  src="{% static 'js/interventions.js' %}"
+></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <div
   class="bg-black min-h-screen mt-32 flex flex-col justify-center items-center p-4"
@@ -279,9 +193,7 @@
     <div class="fixed inset-0 transition-opacity" aria-hidden="true">
       <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
     </div>
-    <span
-      class="hidden sm:inline-block sm:align-middle sm:h-screen"
-      aria-hidden="true"
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
       >&#8203;</span
     >
     <div
@@ -355,21 +267,74 @@
                   >
                     <option value="En cours">En cours</option>
                     <option value="Complété">Complété</option>
+                    <option value="À planifier">À planifier</option>
                     <option value="Annulé">Annulé</option>
                   </select>
                 </div>
                 <div class="mb-4">
                   <label
-                    for="Date de l'intervention"
+                    for="Date_de_l_intervention"
                     class="block text-sm font-medium text-gray-700"
                     >Date de l'intervention</label
                   >
-                  <input
-                    type="date"
-                    id="Date de l'intervention"
-                    name="Date de l'intervention"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                  />
+                  <div class="relative">
+                    <input
+                      type="text"
+                      id="Date_de_l_intervention"
+                      name="Date_de_l_intervention"
+                      placeholder="Sélectionner une date"
+                      class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    />
+                    <span
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                    >
+                      <svg
+                        class="h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M6 2a1 1 0 012 0v1h4V2a1 1 0 112 0v1h3a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1h3V2zM4 8h12v9a1 1 0 01-1 1H5a1 1 0 01-1-1V8zm7 3a1 1 0 00-2 0v3a1 1 0 002 0v-3z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label
+                    for="Heure_de_l_intervention"
+                    class="block text-sm font-medium text-gray-700"
+                    >Heure de l'intervention</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="text"
+                      id="Heure_de_l_intervention"
+                      name="Heure_de_l_intervention"
+                      placeholder="Sélectionner une heure"
+                      class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    />
+                    <span
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                    >
+                      <svg
+                        class="h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 4a1 1 0 112 0v4h2a1 1 0 110 2h-4a1 1 0 01-1-1V4z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               </form>
             </div>
@@ -396,251 +361,4 @@
   </div>
 </div>
 
-<script>
-  var initialView = [48.5734053, 7.7521113]; // Strasbourg coordinates
-  var initialZoom = 13;
-  var map;
-  var addressMap = {};
-  var currentIntervention;
-
-  document.addEventListener("DOMContentLoaded", function () {
-    map = L.map("map").setView(initialView, initialZoom);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    fetchInterventions();
-  });
-
-  function fetchInterventions() {
-    fetch("/api/interventions/")
-      .then((response) => response.json())
-      .then((interventions) => {
-        var tbody = document.getElementById("interventions-body");
-        tbody.innerHTML = ""; // Clear existing content
-
-        interventions.forEach(function (intervention) {
-          if (intervention.latitude && intervention.longitude) {
-            var address = intervention.Adresse;
-            if (!addressMap[address]) {
-              addressMap[address] = [];
-            }
-            addressMap[address].push(intervention);
-
-            var row = `
-                <tr class="hover:bg-gray-100 cursor-pointer" onclick="showModal('${address}')">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention.Adresse}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Type d'intervention"]}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Précision de l'intervention"]}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Statut de l'intervention"]}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${intervention["Date de l'intervention"]}</td>
-                </tr>
-              `;
-            tbody.insertAdjacentHTML("beforeend", row);
-          }
-        });
-
-        for (var address in addressMap) {
-          (function (addr) {
-            var lat = addressMap[addr][0].latitude;
-            var lng = addressMap[addr][0].longitude;
-
-            var marker = L.marker([lat, lng]).addTo(map);
-            marker.bindPopup(`<b>${addr}</b>`);
-            marker.on("click", function () {
-              showModal(addr);
-            });
-          })(address);
-        }
-
-        // Hide the loading indicator after data is loaded
-        document.getElementById("loading-indicator").style.display = "none";
-      })
-      .catch((error) => {
-        console.error("Error fetching interventions:", error);
-        // Hide the loading indicator in case of error
-        document.getElementById("loading-indicator").style.display = "none";
-      });
-  }
-
-  function showModal(address) {
-    var interventionsForAddress = addressMap[address];
-    var modalContent = "";
-
-    interventionsForAddress.forEach(function (intervention, index) {
-      modalContent += `
-          <div class="intervention-item mb-4">
-            <p><strong>Intervention ${index + 1}</strong></p>
-            <p>${intervention["Adresse"]}</p>
-            <p>Type d'intervention: ${intervention["Type d'intervention"]}</p>
-            <p>Précision de l'intervention: ${
-              intervention["Précision de l'intervention"]
-            }</p>
-            <p>Statut de l'intervention: ${
-              intervention["Statut de l'intervention"]
-            }</p>
-            <p>Date de l'intervention: ${
-              intervention["Date de l'intervention"]
-            }</p>
-            <button class="mt-2 white-black-border-animated inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="selectIntervention(${index}, '${address}')">Sélectionner cette intervention</button>
-            <button class="mt-2 white-black-border-animated inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="deleteIntervention(${index}, '${address}')">Supprimer cette intervention</button>
-          </div>
-          <hr/>
-        `;
-    });
-
-    document.getElementById("modal-content").innerHTML = modalContent;
-    document.getElementById("modal-selection").classList.remove("hidden");
-    document.getElementById("modal-update").classList.add("hidden");
-    document.getElementById("intervention-modal").classList.remove("hidden");
-  }
-
-  function selectIntervention(index, address) {
-    var intervention = addressMap[address][index];
-    currentIntervention = intervention;
-
-    document.getElementById("modal-address-update").textContent =
-      intervention.Adresse;
-    document.getElementById("modal-type").textContent =
-      intervention["Type d'intervention"];
-    document.getElementById("modal-precision").textContent =
-      intervention["Précision de l'intervention"];
-    document.getElementById("modal-status").value =
-      intervention["Statut de l'intervention"];
-
-    document.getElementById("modal-selection").classList.add("hidden");
-    document.getElementById("modal-update").classList.remove("hidden");
-  }
-
-  function closeModal() {
-    document.getElementById("intervention-modal").classList.add("hidden");
-  }
-
-  function updateStatus() {
-    var newStatus = document.getElementById("modal-status").value;
-    fetch("/api/update_intervention_status/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        Adresse: currentIntervention.Adresse,
-        "Type d'intervention": currentIntervention["Type d'intervention"],
-        "Précision de l'intervention":
-          currentIntervention["Précision de l'intervention"],
-        "Date de l'intervention": currentIntervention["Date de l'intervention"],
-        "Statut de l'intervention": newStatus,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = "/interventions";
-        } else {
-          console.error("Failed to update status:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  function deleteIntervention(index, address) {
-    var intervention = addressMap[address][index];
-    fetch("/api/delete_intervention/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        Adresse: intervention.Adresse,
-        "Type d'intervention": intervention["Type d'intervention"],
-        "Précision de l'intervention":
-          intervention["Précision de l'intervention"],
-        "Date de l'intervention": intervention["Date de l'intervention"],
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = "/interventions";
-        } else {
-          console.error("Failed to delete intervention:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  function openAddInterventionModal() {
-    document
-      .getElementById("add-intervention-modal")
-      .classList.remove("hidden");
-  }
-
-  function closeAddInterventionModal() {
-    document.getElementById("add-intervention-modal").classList.add("hidden");
-  }
-
-  function addIntervention() {
-    var form = document.getElementById("add-intervention-form");
-    var formData = new FormData(form);
-    var data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-
-    fetch("/api/add_intervention/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = "/interventions";
-        } else {
-          console.error("Failed to add intervention:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  function resetMapView() {
-    map.setView(initialView, initialZoom);
-  }
-
-  function sortTable(columnIndex) {
-    var table = document.getElementById("interventions-table");
-    var tbody = table.tBodies[0];
-    var rows = Array.from(tbody.rows);
-    var isNumericColumn =
-      !isNaN(Date.parse(rows[0].cells[columnIndex].textContent)) ||
-      !isNaN(rows[0].cells[columnIndex].textContent);
-
-    rows.sort(function (a, b) {
-      var cellA = a.cells[columnIndex].textContent.trim();
-      var cellB = b.cells[columnIndex].textContent.trim();
-
-      if (isNumericColumn) {
-        if (!isNaN(Date.parse(cellA))) {
-          // Compare dates
-          return new Date(cellA) - new Date(cellB);
-        }
-        // Compare numeric values
-        return cellA - cellB;
-      } else {
-        return cellA.localeCompare(cellB);
-      }
-    });
-
-    rows.forEach(function (row) {
-      tbody.appendChild(row);
-    });
-  }
-</script>
 {% endblock %}

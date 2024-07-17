@@ -6,7 +6,7 @@ import os
 from .utils.read_csv import read_csv
 from .utils.get_latitude_longitude import get_location
 from django.shortcuts import redirect
-
+# from geopy.geocoders import Nominatim
 def index(request):
     '''
     Homepage
@@ -22,9 +22,17 @@ def interventions_list(request):
     if os.path.exists(file_path):
         csv_data = read_csv(file_path)
         geocoded_data = get_location(csv_data)
+        update_csv(file_path, geocoded_data)  # Update the CSV file with new geolocation data to gain loading speed
         return Response(geocoded_data)
     else:
         return Response({"error": "File not found"}, status=404)
+    
+def update_csv(file_path, csv_data):
+    fieldnames = csv_data[0].keys()
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(csv_data)
 
 @api_view(['POST'])
 def update_intervention_status(request):
@@ -73,28 +81,43 @@ def interventions_view(request):
 
 
 
-
 @api_view(['POST'])
 def add_intervention(request):
-    new_intervention = {
-        'Adresse': request.data.get('Adresse'),
-        'Type d\'intervention': request.data.get('Type d\'intervention'),
-        'Précision de l\'intervention': request.data.get('Précision de l\'intervention'),
-        'Statut de l\'intervention': request.data.get('Statut de l\'intervention'),
-        'Date de l\'intervention': request.data.get('Date de l\'intervention')
-    }
+    '''
+    API endpoint to add a new intervention
+    '''
+    address = request.data.get('Adresse')
+    intervention_type = request.data.get('Type d\'intervention')
+    intervention_precision = request.data.get('Précision de l\'intervention')
+    datetime_intervention = request.data.get('Date de l\'intervention')
+    status = request.data.get('Statut de l\'intervention')
     
     file_path = 'database/interventions_db.csv'
     
-    if os.path.exists(file_path):
-        with open(file_path, mode='a', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=new_intervention.keys())
-            writer.writerow(new_intervention)
-        
-        return render(request, 'interventions.html')
-    else:
-        return Response({"error": "File not found"}, status=404)
-
+    # Ensure the new intervention has latitude and longitude
+    # geolocator = Nominatim(user_agent="interventions_web_manager")
+    # location = geolocator.geocode(f"{address}, 67000 Strasbourg")
+    
+    # if location:
+    new_intervention = {
+        'Adresse': address,
+        'Type d\'intervention': intervention_type,
+        'Précision de l\'intervention': intervention_precision,
+        'Statut de l\'intervention': status,
+        'Date de l\'intervention': datetime_intervention,
+        # 'latitude': location.latitude,
+        # 'longitude': location.longitude
+    }
+    
+    # Append the new intervention to the CSV file
+    fieldnames = list(new_intervention.keys())
+    with open(file_path, mode='a', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writerow(new_intervention)
+    
+    return Response({"message": "Intervention added successfully"})
+    # else:
+    #     return Response({"error": "Could not geocode address"}, status=400)
 
 @api_view(['POST'])
 def delete_intervention(request):

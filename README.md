@@ -177,6 +177,11 @@ Here are some suggested improvements that could be made to enhance the project:
 8. **Deploy on a VPS**
 
     - If necessary we can easily deploy on a vps over https with nginx
+
+9. **Switch to Google API for geolocation or OpenMapQuest**
+    - https://spatialparalysis.xyz/blog/parallel-geopy/
+    - However an API Key, would be needed, of a third party program some free tier some pay as you go.
+
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
